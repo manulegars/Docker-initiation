@@ -1,0 +1,37 @@
+debug = false
+
+logLevel = "ERROR"
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+  [entryPoints.dashboard]
+    address=":8080"
+
+[api]
+entrypoint = "dashboard"
+
+[retry]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "greymatterbay.com"
+watch = true
+exposedByDefault = false
+
+[http.services]
+  [http.services.app]
+    [[http.services.app.weighted.services]]
+      name = "figaro-1"
+      weight = 1
+    [[http.services.app.weighted.services]]
+      name = "figaro-2"
+      weight = 1
+
+  [http.services.appv1]
+    [http.services.appv1.loadBalancer]
+      [[http.services.appv1.loadBalancer.servers]]
+        url = "http://private-ip-server-1/"
+
